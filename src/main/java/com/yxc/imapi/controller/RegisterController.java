@@ -47,7 +47,7 @@ public class RegisterController extends BaseNController {
 
     /**
      *  账号注册
-     * @author 程序员大佬超
+     * @author yxc
      * @date 2021/04/13 23:22
      * @param v_token 系统token
      * @return
