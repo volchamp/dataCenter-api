@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author liwx
- * @date 2021-05-25 16:12.
+ * @author 程序员大佬超
+ * @date 2023-03-01 15:33.
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -21,7 +21,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> patterns = new ArrayList<>();
-//        patterns.add("/**/cameras/previewURLs");
+        patterns.add("/**/login/login");
+        patterns.add("/**/register/accountRegister");
         registry.addInterceptor(authTokenInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);

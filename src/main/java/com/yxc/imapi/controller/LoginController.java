@@ -57,7 +57,7 @@ public class LoginController extends BaseNController {
 
 
     @RequestMapping(value = "/login")
-    public Map<String, Object> Login(@RequestHeader(value = "v_token", required = true) String v_token,
+    public Map<String, Object> Login(@RequestHeader(value = "test", required = true) String v_token,
                                      @RequestBody @Validated @ApiParam(value = "{json对象}") Login login,
                                      HttpServletRequest request, HttpServletResponse hresponse) {
 

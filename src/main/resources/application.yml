@@ -3,15 +3,22 @@ server:
   servlet:
     context-path: /api-im
 
-myserver:
-  name: im-server
+config:
+  jwt:
+    # 加密密钥
+    secret: sdjhakdhajdklsl;o653632
+    # token有效时长
+    expire: 28800
+    redisexp: 7200
+    # header 名称
+    header: token
 
 spring:
   redis:
-    host: 192.168.157.000
+    host: 124.222.4.40
     port: 6379
     database: 1
-    password: yxcredis
+    password: chaodev666888
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
