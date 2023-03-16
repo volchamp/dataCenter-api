@@ -43,7 +43,7 @@ public class RegisterController extends BaseNController {
 
     /**
      *  账号注册
-     * @author 程序员大佬超
+     * @author yxc
      * @date 2021/04/13 23:22
      * @param v_token 系统token
      * @return
@@ -71,7 +71,7 @@ public class RegisterController extends BaseNController {
         users.setUserPhone("");
         users.setEmail("");
         users.setNickName(nick_name);
-        users.setHeadUrl("https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2149183452,3867978643&fm=26&gp=0.jpg");
+        users.setHeadUrl("https://www.lgstatic.com/i/image2/M01/3C/FE/CgoB5lzvhkyAGQbfAAHge6HweCk703.jpg");
         users.setSex(1);
         users.setState(1);
         users.setCreateTime(new Date());
