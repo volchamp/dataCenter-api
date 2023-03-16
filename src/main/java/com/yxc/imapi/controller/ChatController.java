@@ -1,8 +1,6 @@
 package com.yxc.imapi.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.yxc.imapi.base.BaseNController;
@@ -11,29 +9,21 @@ import com.yxc.imapi.model.Message;
 import com.yxc.imapi.model.UserLatestInfo;
 import com.yxc.imapi.model.chat.*;
 import com.yxc.imapi.service.ChatService;
-import com.yxc.imapi.util.getRequestPayloadUtil;
-import com.yxc.imapi.utils.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.enums.ResultEnum;
-import com.yxc.imapi.utils.model.CurrUser;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 /**

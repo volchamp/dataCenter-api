@@ -1,18 +1,14 @@
 package com.yxc.imapi.controller;
 import java.util.Date;
 
-import com.jfinal.plugin.activerecord.Record;
 import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.core.WebSocketServer;
 import com.yxc.imapi.model.Permission;
 import com.yxc.imapi.model.Users;
 import com.yxc.imapi.model.register.Register;
-import com.yxc.imapi.service.ChatService;
 import com.yxc.imapi.service.RegisterService;
-import com.yxc.imapi.utils.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.enums.ResultEnum;
-import com.yxc.imapi.utils.model.CurrUser;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;

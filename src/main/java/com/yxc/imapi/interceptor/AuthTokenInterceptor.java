@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 /**
- * @author liwx
+ * @author chaodev
  * @date 2021-05-25 16:01.
  */
 @Component
@@ -22,9 +22,9 @@ public class AuthTokenInterceptor implements HandlerInterceptor{
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception{
-        String token = request.getHeader("token");
+        String token = request.getHeader("v_token");
         if (StrUtil.isEmpty(token)){
-            token = request.getParameter("token");
+            token = request.getParameter("V_token");
         }
         if(StrUtil.isEmpty(token)){
             //未包含token，直接输出401

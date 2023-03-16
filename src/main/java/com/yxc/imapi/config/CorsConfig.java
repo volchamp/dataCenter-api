@@ -6,13 +6,21 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 ///跨域访问配置
 @Configuration
 public class CorsConfig {
     private CorsConfiguration buildConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);  //sessionid 多次访问一致
-        corsConfiguration.addAllowedOrigin("*"); // 允许任何域名使用
+
+        // 允许访问的客户端域名
+        List<String> allowedOriginPatterns = new ArrayList<>();
+        allowedOriginPatterns.add("*");
+        corsConfiguration.setAllowedOriginPatterns(allowedOriginPatterns);
+//        corsConfiguration.addAllowedOrigin("*"); // 允许任何域名使用
         corsConfiguration.addAllowedHeader("*"); // 允许任何头
         corsConfiguration.addAllowedMethod("*"); // 允许任何方法（post、get等）
         return corsConfiguration;

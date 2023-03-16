@@ -1,4 +1,5 @@
 package com.yxc.imapi.util;
+import java.util.Date;
 
 
 import com.alibaba.fastjson.JSON;
@@ -8,26 +9,60 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.yxc.imapi.model.UserInfo;
+import com.yxc.imapi.model.Users;
+import org.h2.engine.User;
 
 import java.util.*;
 
 /**
  * The type Jwt util.
+ *
  * @author liwx
  */
 public class JwtUtil {
+    public static void main(String[] args) {
+        Users users = new Users();
+        users.setId(1);
+        users.setUserId("yxc");
+        users.setUserPassword("RTEwQURDMzk0OUJBNTlBQkJFNTZFMDU3RjIwRjg4M0U=");
+        users.setUserName("大佬超");
+        users.setUserPhone("18468182835");
+        users.setEmail("");
+        users.setNickName("");
+        users.setHeadUrl("");
+        users.setSex(0);
+        users.setState(0);
+        users.setCreateTime(new Date());
+        users.setCreateUser("");
+        users.setLastUpdateTime(new Date());
+
+        try {
+            String token = createToken(users);
+            System.out.println(token);
+
+//            Map<String, Claim> map = verifyToken(token);
+//            int length=map.size();
+
+            Users users1= getCurrUserFromToken(token);
+            String userId=users1.getUserId();
+            System.out.println(userId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * 密钥
      */
-    public static final String SECRET = "KunMingCtSoft.Lmt";
+    public static final String SECRET = "DaLaoChaoSoft.Lmt";
     /**
      * 过期时间:秒
      */
-    public static final int EXPIRE = 30*60;
+    public static final int EXPIRE = 30 * 60;
 
-    public static String createToken(UserInfo localCurrentUser) throws Exception {
+    public static String createToken(Users localCurrentUser) throws Exception {
         String userJson = JSONObject.toJSONString(localCurrentUser);
         byte[] userJsonByte = Base64.getEncoder().encode(userJson.getBytes("utf-8"));
         Calendar nowTime = Calendar.getInstance();
@@ -45,29 +80,29 @@ public class JwtUtil {
         return token;
     }
 
-    public static Map<String, Claim> verifyToken(String token)throws Exception{
+    public static Map<String, Claim> verifyToken(String token) throws Exception {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
         DecodedJWT jwt = null;
         try {
             jwt = verifier.verify(token);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("凭证已过期，请重新登录");
         }
         return jwt.getClaims();
     }
 
-    public static UserInfo getCurrUserFromToken(String token){
-        UserInfo currUser=new UserInfo();
-        try{
-            DecodedJWT decodedJWT= JWT.decode(token);
-            String str=decodedJWT.getPayload();
-            byte[] orignB= Base64.getUrlDecoder().decode(str.getBytes("utf-8"));
-            String orgin=new String(orignB,"utf-8");
-            JSONObject jsonObject= JSON.parseObject(orgin);
+    public static Users getCurrUserFromToken(String token) {
+        Users currUser = new Users();
+        try {
+            DecodedJWT decodedJWT = JWT.decode(token);
+            String str = decodedJWT.getPayload();
+            byte[] orignB = Base64.getUrlDecoder().decode(str.getBytes("utf-8"));
+            String orgin = new String(orignB, "utf-8");
+            JSONObject jsonObject = JSON.parseObject(orgin);
             String json = jsonObject.getString("currUser");
             byte[] userInfoJson = Base64.getDecoder().decode(json.getBytes("utf-8"));
-            currUser = JSONObject.parseObject(new String(userInfoJson,"utf-8"),UserInfo.class);
-        }catch(Exception e){
+            currUser = JSONObject.parseObject(new String(userInfoJson, "utf-8"), Users.class);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -85,7 +120,7 @@ public class JwtUtil {
     /*
      * Token 是否过期验证
      */
-    public boolean isTokenExpired (Date expirationTime) {
+    public boolean isTokenExpired(Date expirationTime) {
         return expirationTime.before(new Date());
     }
 }

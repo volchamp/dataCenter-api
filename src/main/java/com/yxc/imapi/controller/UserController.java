@@ -9,10 +9,10 @@ import com.yxc.imapi.base.RedisDao;
 import com.yxc.imapi.core.WebSocketServer;
 import com.yxc.imapi.model.UserContacts;
 import com.yxc.imapi.model.Users;
-import com.yxc.imapi.model.chat.UserGet;
 import com.yxc.imapi.model.sys.AddUser;
 import com.yxc.imapi.model.sys.UserList;
 import com.yxc.imapi.service.UserService;
+import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.enums.ResultEnum;
 import io.swagger.annotations.ApiParam;
@@ -52,10 +52,10 @@ public class UserController extends BaseNController {
 
     @RequestMapping(value = "/getUser")
     public Map<String, Object> getUser(@RequestHeader(value = "v_token", required = true) String v_token,
-                                       @RequestBody @Validated @ApiParam(value = "{json对象}") UserGet userGet,
                                      HttpServletRequest request, HttpServletResponse hresponse) {
         Map<String, Object> remap = new HashMap<>();
-        List<Users> usersList=userService.getUser(userGet.getUser_id());
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        List<Users> usersList=userService.getUser(users.getUserId());
         if(usersList!=null&&usersList.size()>0){
             Users user=usersList.get(0);
             Map<String, Object> usermap = new HashMap<>();
@@ -156,17 +156,16 @@ public class UserController extends BaseNController {
     /**
      * 删除用户
      * @param v_token
-     * @param userGet
      * @param request
      * @param hresponse
      * @return
      */
     @RequestMapping(value = "/deleteUser")
     public Result deleteUser(@RequestHeader(value = "v_token", required = true) String v_token,
-                               @RequestBody @Validated @ApiParam(value = "{json对象}") UserGet userGet,
                                HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        String user_id = userGet.getUser_id();
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
 
         int flag=Db.update("update users set state=0 where user_id=?",user_id);
 
@@ -214,17 +213,16 @@ public class UserController extends BaseNController {
     /**
      * 获取用户角色
      * @param v_token
-     * @param userGet
      * @param request
      * @param hresponse
      * @return
      */
     @RequestMapping(value = "/getRoleByUserId")
     public Result getRoleByUserId(@RequestHeader(value = "v_token", required = true) String v_token,
-                              @RequestBody @Validated @ApiParam(value = "{json对象}") UserGet userGet,
                               HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        String user_id=userGet.getUser_id();
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id=users.getUserId();
         List<Record> list=Db.find("select * from permission where user_id=? and state<>0",user_id);
 
         result.setCode(ResultEnum.SUCCESS.getCode());
