@@ -217,10 +217,32 @@ public class ChatController extends BaseNController {
             boolean flag = chatService.addMessage(imMessage);
 
             //更新会话
+            //先给自己加一条，再给对方加一条
+            //发送人：
+            UserLatestInfo imUserLatestInfo2 = new UserLatestInfo();
+            imUserLatestInfo2.setUserId(sendUserId);
+            imUserLatestInfo2.setFriendId(receiverUserId);
+            imUserLatestInfo2.setUnreadCount(0);
+            imUserLatestInfo2.setMessage(message);
+            imUserLatestInfo2.setSendDate(date);
+            imUserLatestInfo2.setChannel("");
+            imUserLatestInfo2.setSendUser(sendUserId);
+            imUserLatestInfo2.setReceiver(receiverUserId);
+            imUserLatestInfo2.setContentType(contentType);
+            imUserLatestInfo2.setPictureUrl(pictureUrl);
+            imUserLatestInfo2.setLongitude("");
+            imUserLatestInfo2.setLatitude("");
+            imUserLatestInfo2.setCoordinateType("");
+            imUserLatestInfo2.setState(1);
+            imUserLatestInfo2.setLastUpdateTime(date);
+            imUserLatestInfo2.setCreateTime(date);
+            boolean latestFlag2 = chatService.addLetestMessage(imUserLatestInfo2, 0);
+
+            //接收人：
             UserLatestInfo imUserLatestInfo = new UserLatestInfo();
-            imUserLatestInfo.setUserId(sendUserId);
-            imUserLatestInfo.setFriendId(receiverUserId);
-            imUserLatestInfo.setUnreadCount(0);
+            imUserLatestInfo.setUserId(receiverUserId);
+            imUserLatestInfo.setFriendId(sendUserId);
+            imUserLatestInfo.setUnreadCount(1);
             imUserLatestInfo.setMessage(message);
             imUserLatestInfo.setSendDate(date);
             imUserLatestInfo.setChannel("");

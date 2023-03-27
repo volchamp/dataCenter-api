@@ -90,7 +90,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public boolean addLetestMessage(UserLatestInfo userLatestInfo, int from) {
         String sendUserId = userLatestInfo.getUserId();
-        String receiverUserId=userLatestInfo.getReceiver();
+        String receiverUserId=userLatestInfo.getFriendId();
         List<UserLatestInfo> latestInfoList = userLatestInfo.find("select * from user_latest_info where user_id='"+sendUserId+"' and friend_id='"+receiverUserId+"' and state<>0");
         if (latestInfoList != null && latestInfoList.size() > 0) {
             UserLatestInfo info = latestInfoList.get(0);
