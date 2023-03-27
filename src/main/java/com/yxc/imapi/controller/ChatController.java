@@ -7,8 +7,10 @@ import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.core.WebSocketServer;
 import com.yxc.imapi.model.Message;
 import com.yxc.imapi.model.UserLatestInfo;
+import com.yxc.imapi.model.Users;
 import com.yxc.imapi.model.chat.*;
 import com.yxc.imapi.service.ChatService;
+import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.enums.ResultEnum;
 import io.swagger.annotations.ApiOperation;
@@ -86,8 +88,9 @@ public class ChatController extends BaseNController {
                                  @RequestBody @Validated @ApiParam(value = "{json对象}") Contact contact,
                                  HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
 
-        List<Record> list = chatService.getContactList(contact.getUser_id(), contact.getKeyword());
+        List<Record> list = chatService.getContactList(users.getUserId(), contact.getKeyword());
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMsg("获取数据成功");
         result.setData(recordsToObject(list));
@@ -108,8 +111,9 @@ public class ChatController extends BaseNController {
                                          @RequestBody @Validated @ApiParam(value = "{json对象}") Contact contact,
                                          HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
 
-        List<Record> list = chatService.getCusMsgLatestOneList(contact.getUser_id(), contact.getKeyword());
+        List<Record> list = chatService.getCusMsgLatestOneList(users.getUserId(), contact.getKeyword());
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMsg("获取数据成功");
         result.setData(recordsToObject(list));
@@ -160,8 +164,8 @@ public class ChatController extends BaseNController {
     private Page<Message> getMessageHis(@RequestHeader(value = "v_token", required = true) String v_token,
                                         @RequestBody @Validated @ApiParam(value = "{json对象}") MsgHis msgHis,
                                         HttpServletRequest request, HttpServletResponse hresponse) {
-
-        Page<Message> page = chatService.getMessageHis(msgHis.getPageNumber(), msgHis.getPageSize(), msgHis.getUser_id(), msgHis.getFriend_id());
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Page<Message> page = chatService.getMessageHis(msgHis.getPageNumber(), msgHis.getPageSize(), users.getUserId(), msgHis.getFriend_id());
         List<Message> list = page.getList();
         Collections.reverse(list);//将列表反转
         page.setList(list);
@@ -174,7 +178,9 @@ public class ChatController extends BaseNController {
     public Result merchantmsg(@RequestHeader(value = "v_token", required = true) String v_token,
                               @RequestBody @Validated @ApiParam(value = "{json对象}") merchantmsg merchantmsg, HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        String sendUserId = merchantmsg.getSendUserId();
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String sendUserId=users.getUserId();
+//        String sendUserId = merchantmsg.getSendUserId();
         String receiverUserId = merchantmsg.getReceiverUserId();
         String message = merchantmsg.getMessage();
         int contentType = merchantmsg.getContentType();

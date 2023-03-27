@@ -33,6 +33,7 @@ import java.util.Map;
 import static com.yxc.imapi.utils.Base64EnOut.Base64Encode;
 
 /**
+ * 这个类如果图片和文件上传用了腾讯的cos对象存储的话可以使用，不然可以不要
  * @author yxc
  * @title: im
  * @projectName api

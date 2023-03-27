@@ -19,7 +19,5 @@ import javax.validation.constraints.NotNull;
 @Data
 public class Contact {
     @NotNull
-    private String user_id;
-    @NotNull
     private String keyword;
 }

@@ -60,7 +60,7 @@ public class LoginController extends BaseNController {
 
 
                 String token = JwtUtil.createToken(user);
-                redisDao.vSet(token, user.getUserId(),300*60L);
+                redisDao.vSet(token, user.getUserId(),60*60L);
 
                 remap.put("userinfo", usermap);
                 remap.put("tokeninfo", token);

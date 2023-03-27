@@ -34,7 +34,7 @@ public class AuthTokenInterceptor implements HandlerInterceptor{
             JSONObject res = new JSONObject();
             res.put("code", -1);
             res.put("type", "");
-            res.put("message", "没有访问权限，请重新登录!");
+            res.put("msg", "没有访问权限，请重新登录!");
             res.put("data", "");
             out.append(res.toString());
             out.flush();
@@ -50,7 +50,7 @@ public class AuthTokenInterceptor implements HandlerInterceptor{
             JSONObject res = new JSONObject();
             res.put("code", -1);
             res.put("type", "");
-            res.put("message", "账号登录信息过期，请重新登录!");
+            res.put("msg", "账号登录信息过期，请重新登录!");
             res.put("data", "");
             out.append(res.toString());
             out.flush();
@@ -60,7 +60,7 @@ public class AuthTokenInterceptor implements HandlerInterceptor{
         //判断过期时间，如果小于60分钟，延迟过期时间
         long expire = redisDao.getExpire(token);
         if(expire/60 < 60){
-            redisDao.vSet(token, "延迟过期",300*60L);
+            redisDao.vSet(token, "延迟过期",60*60L);
         }
         //用户登录信息存入线程变量
 //        LocalCurrentUser currentUser = JwtUtil.getCurrUserFromToken(token);

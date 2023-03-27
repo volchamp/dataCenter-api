@@ -80,7 +80,10 @@ public class UserController extends BaseNController {
                                        @RequestBody @Validated @ApiParam(value = "{json对象}") AddUser addUser,
                                        HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        String user_id = addUser.getUser_id();
+        //获取登录人信息
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+
         String friend_id = addUser.getFriend_id();
 
         if(user_id.equals(friend_id)){
@@ -97,7 +100,7 @@ public class UserController extends BaseNController {
             return result;
         }
 
-        //先强行添加为好友
+        //先强行添加为好友吧
         UserContacts userContacts1=new UserContacts();
         userContacts1.setUserId(user_id);
         userContacts1.setFriendId(friend_id);
@@ -137,7 +140,10 @@ public class UserController extends BaseNController {
                           @RequestBody @Validated @ApiParam(value = "{json对象}") AddUser addUser,
                           HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        String user_id = addUser.getUser_id();
+        //获取登录人信息
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+
         String friend_id = addUser.getFriend_id();
 
         int flag=Db.update("update user_contacts set state=0 where (user_id=? and friend_id=?) or (user_id=? and friend_id=?)",user_id,friend_id,friend_id,user_id);

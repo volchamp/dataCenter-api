@@ -19,8 +19,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class MsgHis {
     @NotNull
-    private String user_id;
-    @NotNull
     private String friend_id;
     @NotNull
     private int pageNumber;
