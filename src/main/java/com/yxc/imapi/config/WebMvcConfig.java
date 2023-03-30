@@ -23,6 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         List<String> patterns = new ArrayList<>();
         patterns.add("/**/login/login");
         patterns.add("/**/register/accountRegister");
+        patterns.add("/**/attach/uploadAtt");
         registry.addInterceptor(authTokenInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);

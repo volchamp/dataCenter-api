@@ -66,7 +66,7 @@ public class UploadController {
         //获取文件的文件名字(后面要用到)
         String filename = file.getOriginalFilename();
         //这个url是要上传到另一个服务器上接口
-        String url = String.format("http://10.124.13.37:8080/fileupload/attach/uploadFileNew");
+        String url = String.format("http://:8080/fileupload/attach/uploadFileNew");
         Object object = null;
         Base64EnOut base64EnOut = new Base64EnOut();
         String result = null;

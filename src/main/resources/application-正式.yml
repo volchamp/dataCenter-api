@@ -26,22 +26,6 @@ spring:
     username: root
     password: yxc123456
 
-  qcloud:
-    #API密钥secretId
-    secretId: AKIDz5vUmoZ3FBk22lEUTBclfIdh
-    #API密钥secretKey
-    secretKey: i9JDqCH4h7G8k7DtueDpHUSAaj
-    #存储桶所属地域
-    region: ap-chengdu
-    #存储桶空间名称
-    bucketName: yxccos-12584179
-#    bucketName: yxccos2-125384179
-    #存储桶访问域名
-    url: https://yxccos-1253584179.cos.ap-chengdu.myqcloud.com
-#    url: https://yxccos2-1253584179.cos.ap-chengdu.myqcloud.com
-    #上传文件前缀路径(eg:/images/)
-    prefix: /
-
 http_pool:
   max_total: 200
   default_max_per_route: 100
