@@ -98,7 +98,7 @@ public class ChatController extends BaseNController {
     }
 
     /**
-     * 获取聊天列表
+     * 获取会话列表
      *
      * @param v_token 系统token
      * @return

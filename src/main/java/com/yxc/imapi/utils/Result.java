@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 返回的对象(统一返回)
  *
- * @author SmallStrong
+ * @author yxc
  */
 public class Result implements Serializable {
 
