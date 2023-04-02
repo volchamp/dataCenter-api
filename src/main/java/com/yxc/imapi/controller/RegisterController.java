@@ -71,7 +71,7 @@ public class RegisterController extends BaseNController {
         users.setUserPhone("");
         users.setEmail("");
         users.setNickName(nick_name);
-        users.setHeadUrl("https://www.lgstatic.com/i/image2/M01/3C/FE/CgoB5lzvhkyAGQbfAAHge6HweCk703.jpg");
+        users.setHeadUrl("http://124.222.4.40:8091/files/default_avatar.jpeg");
         users.setSex(1);
         users.setState(1);
         users.setCreateTime(new Date());
