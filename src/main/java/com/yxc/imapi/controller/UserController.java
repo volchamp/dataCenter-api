@@ -7,8 +7,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.base.RedisDao;
 import com.yxc.imapi.core.WebSocketServer;
-import com.yxc.imapi.model.UserContacts;
-import com.yxc.imapi.model.Users;
+import com.yxc.imapi.model.*;
 import com.yxc.imapi.model.sys.AddUser;
 import com.yxc.imapi.model.sys.UserList;
 import com.yxc.imapi.service.UserService;
@@ -154,6 +153,95 @@ public class UserController extends BaseNController {
         } else {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("删除失败");
+        }
+
+        return result;
+    }
+
+    /**
+     * 更换头像
+     * @param avatar
+     * @param request
+     * @param hresponse
+     * @return
+     */
+    @RequestMapping(value = "/updateAvatar")
+    public Result updateAvatar(@RequestHeader(value = "v_token", required = true) String v_token,
+                               @RequestBody @Validated @ApiParam(value = "{json对象}") Avatar avatar,
+                               HttpServletRequest request, HttpServletResponse hresponse) {
+        Result result = new Result();
+        //获取登录人信息
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+
+        String avartarUrl= avatar.getAvartarUrl();
+
+        int flag=Db.update("update users set head_url=? where user_id=? and state=1",avartarUrl,user_id);
+
+        if (flag>0) {
+            result.setCode(ResultEnum.SUCCESS.getCode());
+            result.setMsg("操作成功");
+        } else {
+            result.setCode(ResultEnum.EREOR.getCode());
+            result.setMsg("操作失败");
+        }
+
+        return result;
+    }
+
+    /**
+     * 更换背景封面
+     * @param bgCover
+     * @param request
+     * @param hresponse
+     * @return
+     */
+    @RequestMapping(value = "/updateBgCover")
+    public Result updateBgCover(@RequestHeader(value = "v_token", required = true) String v_token,
+                               @RequestBody @Validated @ApiParam(value = "{json对象}") BgCover bgCover,
+                               HttpServletRequest request, HttpServletResponse hresponse) {
+        Result result = new Result();
+        //获取登录人信息
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+
+        int flag=Db.update("update users set bgCover=? where user_id=? and state=1",bgCover.getBgCover(),user_id);
+
+        if (flag>0) {
+            result.setCode(ResultEnum.SUCCESS.getCode());
+            result.setMsg("操作成功");
+        } else {
+            result.setCode(ResultEnum.EREOR.getCode());
+            result.setMsg("操作失败");
+        }
+
+        return result;
+    }
+
+    /**
+     * 更换个性签名
+     * @param personalSign
+     * @param request
+     * @param hresponse
+     * @return
+     */
+    @RequestMapping(value = "/updatePersonalSign")
+    public Result updatePersonalSign(@RequestHeader(value = "v_token", required = true) String v_token,
+                                @RequestBody @Validated @ApiParam(value = "{json对象}") PersonalSign personalSign,
+                                HttpServletRequest request, HttpServletResponse hresponse) {
+        Result result = new Result();
+        //获取登录人信息
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+
+        int flag=Db.update("update users set personalSign=? where user_id=? and state=1",personalSign.getPersonalSign(),user_id);
+
+        if (flag>0) {
+            result.setCode(ResultEnum.SUCCESS.getCode());
+            result.setMsg("操作成功");
+        } else {
+            result.setCode(ResultEnum.EREOR.getCode());
+            result.setMsg("操作失败");
         }
 
         return result;
