@@ -60,8 +60,13 @@ public class UserController extends BaseNController {
             Map<String, Object> usermap = new HashMap<>();
             usermap.put("userId", user.getUserId());
             usermap.put("userName", user.getUserName());
+            usermap.put("userPhone",user.getUserPhone());
             usermap.put("headUrl", user.getHeadUrl());
             usermap.put("nickName",user.getNickName());
+            usermap.put("bgCover",user.getBgCover());
+            usermap.put("personalSign",user.getPersonalSign());
+            usermap.put("email",user.getEmail());
+            usermap.put("sex",user.getSex());
 
             remap.put("userinfo", usermap);
             remap.put("result", "SUCCESS");

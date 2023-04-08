@@ -18,7 +18,7 @@ public class RecordModelGenerator {
         DruidDataSource dataSource = new DruidDataSource();
         try{
             YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-            yaml.setResources(new ClassPathResource("application.yml"));
+            yaml.setResources(new ClassPathResource("application-local.yml"));
             Properties properties = yaml.getObject();
             dataSource.setUrl(properties.getProperty("spring.datasource.url"));
             dataSource.setUsername(properties.getProperty("spring.datasource.username"));

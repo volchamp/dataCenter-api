@@ -81,6 +81,15 @@ public abstract class BaseUsers<M extends BaseUsers<M>> extends Model<M> impleme
 		return getStr("head_url");
 	}
 
+	public M setBgCover(java.lang.String bgCover) {
+		set("bgCover", bgCover);
+		return (M)this;
+	}
+	
+	public java.lang.String getBgCover() {
+		return getStr("bgCover");
+	}
+
 	public M setSex(java.lang.Integer sex) {
 		set("sex", sex);
 		return (M)this;
@@ -88,6 +97,15 @@ public abstract class BaseUsers<M extends BaseUsers<M>> extends Model<M> impleme
 	
 	public java.lang.Integer getSex() {
 		return getInt("sex");
+	}
+
+	public M setPersonalSign(java.lang.String personalSign) {
+		set("personalSign", personalSign);
+		return (M)this;
+	}
+	
+	public java.lang.String getPersonalSign() {
+		return getStr("personalSign");
 	}
 
 	public M setState(java.lang.Integer state) {
