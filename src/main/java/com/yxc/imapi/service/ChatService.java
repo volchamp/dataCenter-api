@@ -11,6 +11,6 @@ public interface ChatService {
     List<Record> getCusMsgLatestOneList(String user_id,String keyword);
     Page<Message> getMessageHis(int pageNumber,int pageSize,String user_id,String friend_id);
     boolean addMessage(Message message);
-    boolean addLetestMessage(UserLatestInfo imUserLatestInfo,int from);
+    boolean addLetestMessage(UserChatSession imUserChatSession,int from);
     boolean updateUnreadCount(String user_id,int unreadCount,String friend_id);
 }

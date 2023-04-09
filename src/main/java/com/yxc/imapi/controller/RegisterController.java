@@ -3,7 +3,7 @@ import java.util.Date;
 
 import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.core.WebSocketServer;
-import com.yxc.imapi.model.Permission;
+import com.yxc.imapi.model.SysUserRole;
 import com.yxc.imapi.model.Users;
 import com.yxc.imapi.model.register.Register;
 import com.yxc.imapi.service.RegisterService;
@@ -78,17 +78,18 @@ public class RegisterController extends BaseNController {
         users.setCreateUser("");
         users.setLastUpdateTime(new Date());
 
-        Permission permission=new Permission();
-        permission.setUserId(user_id);
-        permission.setRoleId(1001);
-        permission.setSTATE(1);
-        permission.setCreateTime(new Date());
+        SysUserRole sysUserRole=new SysUserRole();
+        sysUserRole.setUserId(user_id);
+        sysUserRole.setRoleCode("006");
+        sysUserRole.setStatus(1);
+        sysUserRole.setCreateDate(new Date());
+
 
 
         //注册
         boolean flag=registerService.register(users);
         //赋予角色
-        boolean flagP=registerService.addPermission(permission);
+        boolean flagP=registerService.addPermission(sysUserRole);
         if(flag){
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("注册成功");

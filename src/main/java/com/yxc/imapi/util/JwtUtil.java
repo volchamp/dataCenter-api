@@ -26,7 +26,7 @@ public class JwtUtil {
         users.setUserId("yxc");
         users.setUserPassword("RTEwQURDMzk0OUJBNTlBQkJFNTZFMDU3RjIwRjg4M0U=");
         users.setUserName("大佬超");
-        users.setUserPhone("18468182835");
+        users.setUserPhone("18468888888");
         users.setEmail("");
         users.setNickName("");
         users.setHeadUrl("");

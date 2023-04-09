@@ -17,10 +17,10 @@ public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
 		arp.addMapping("message", "id", Message.class);
-		arp.addMapping("permission", "id", Permission.class);
-		arp.addMapping("role", "role_id", Role.class);
+		arp.addMapping("sys_role", "id", SysRole.class);
+		arp.addMapping("sys_user_role", "id", SysUserRole.class);
+		arp.addMapping("user_chat_session", "id", UserChatSession.class);
 		arp.addMapping("user_contacts", "id", UserContacts.class);
-		arp.addMapping("user_latest_info", "id", UserLatestInfo.class);
 		arp.addMapping("users", "id", Users.class);
 	}
 }

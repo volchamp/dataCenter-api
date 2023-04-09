@@ -322,7 +322,7 @@ public class UserController extends BaseNController {
         Result result = new Result();
         Users users=JwtUtil.getCurrUserFromToken(v_token);
         String user_id=users.getUserId();
-        List<Record> list=Db.find("select * from permission where user_id=? and state<>0",user_id);
+        List<Record> list=Db.find("select * from sys_user_role where user_id=? and state<>0",user_id);
 
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMsg("获取数据成功");
