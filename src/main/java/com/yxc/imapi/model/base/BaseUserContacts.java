@@ -36,6 +36,51 @@ public abstract class BaseUserContacts<M extends BaseUserContacts<M>> extends Mo
 		return getStr("friend_id");
 	}
 
+	public M setFriendLabel(java.lang.String friendLabel) {
+		set("friend_label", friendLabel);
+		return (M)this;
+	}
+	
+	public java.lang.String getFriendLabel() {
+		return getStr("friend_label");
+	}
+
+	public M setFriendNote(java.lang.String friendNote) {
+		set("friend_note", friendNote);
+		return (M)this;
+	}
+	
+	public java.lang.String getFriendNote() {
+		return getStr("friend_note");
+	}
+
+	public M setFriendStatus(java.lang.Integer friendStatus) {
+		set("friend_status", friendStatus);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getFriendStatus() {
+		return getInt("friend_status");
+	}
+
+	public M setFriendAddDirection(java.lang.String friendAddDirection) {
+		set("friend_add_direction", friendAddDirection);
+		return (M)this;
+	}
+	
+	public java.lang.String getFriendAddDirection() {
+		return getStr("friend_add_direction");
+	}
+
+	public M setFriendMessage(java.lang.String friendMessage) {
+		set("friend_message", friendMessage);
+		return (M)this;
+	}
+	
+	public java.lang.String getFriendMessage() {
+		return getStr("friend_message");
+	}
+
 	public M setState(java.lang.Integer state) {
 		set("state", state);
 		return (M)this;

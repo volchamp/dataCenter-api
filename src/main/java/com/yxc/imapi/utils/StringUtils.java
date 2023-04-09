@@ -1,13 +1,5 @@
 package com.yxc.imapi.utils;
 
-/**
- * @author dyl
- * @title StringUtils
- * @projectName HBJOAV1
- * @description: TODO
- * @date 2019/7/229:53
- */
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -18,12 +10,12 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * @author liwuze
+ * @author 程序员大佬超
  * @ClassName StringUtils
  * @Description TOO
- * @Date 2019/6/11 17:01
+ * @Date 2021/6/11 18:01
  * @Version 1.0
- * 替换特殊字符
+ *
  **/
 public class StringUtils {
     /**
