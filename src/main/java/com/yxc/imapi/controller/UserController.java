@@ -104,22 +104,18 @@ public class UserController extends BaseNController {
             return result;
         }
 
-        //先强行添加为好友吧
-        UserContacts userContacts1=new UserContacts();
-        userContacts1.setUserId(user_id);
-        userContacts1.setFriendId(friend_id);
-        userContacts1.setState(1);
-        userContacts1.setCreateTime(new Date());
-
-        UserContacts userContacts2=new UserContacts();
-        userContacts2.setUserId(friend_id);
-        userContacts2.setFriendId(user_id);
-        userContacts2.setState(1);
-        userContacts2.setCreateTime(new Date());
+        UserContacts userContacts=new UserContacts();
+        userContacts.setUserId(user_id);
+        userContacts.setFriendId(friend_id);
+        userContacts.setFriendStatus(0);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝
+        userContacts.setFriendAddDirection("out");//添加方式 in：别人加我  out：我加别人
+        userContacts.setFriendMessage("");//添加留言
+        userContacts.setState(1);
+        userContacts.setCreateTime(new Date());
+        userContacts.setCreateUser(user_id);
 
 
-        boolean flag = userService.addUser(userContacts1);
-        boolean flag2 = userService.addUser(userContacts2);
+        boolean flag = userService.addUser(userContacts);
         if (flag) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("添加成功");

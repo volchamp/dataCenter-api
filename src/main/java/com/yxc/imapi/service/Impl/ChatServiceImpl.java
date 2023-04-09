@@ -27,6 +27,7 @@ public class ChatServiceImpl implements ChatService {
                 "and UC.friend_id=U.user_id\n" +
                 "and U.nick_name like '%"+keyword+"%'\n" +
                 "and UC.state<>0\n" +
+                "and UC.friend_status=1\n" +
                 "and U.state<>0\n" +
                 "order by U.nick_name desc";
         return Db.find(sql);
