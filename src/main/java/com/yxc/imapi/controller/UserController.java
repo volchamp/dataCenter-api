@@ -2,6 +2,7 @@ package com.yxc.imapi.controller;
 
 import java.util.Date;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -13,6 +14,7 @@ import com.yxc.imapi.model.chat.Contact;
 import com.yxc.imapi.model.sys.AddUser;
 import com.yxc.imapi.model.sys.NewFriend;
 import com.yxc.imapi.model.sys.UserList;
+import com.yxc.imapi.service.ChatService;
 import com.yxc.imapi.service.UserService;
 import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
@@ -47,6 +49,8 @@ public class UserController extends BaseNController {
     @Autowired
     WebSocketServer webSocketServer;
 
+    @Autowired
+    ChatService chatService;
     @Autowired
     UserService userService;
     @Autowired
@@ -118,6 +122,7 @@ public class UserController extends BaseNController {
         String user_id = users.getUserId();
 
         String friend_id = addUser.getFriend_id();
+        String message=addUser.getFriend_message();
 
         if (user_id.equals(friend_id)) {
             result.setCode(ResultEnum.EREOR.getCode());
@@ -152,7 +157,7 @@ public class UserController extends BaseNController {
         userContacts.setFriendId(friend_id);
         userContacts.setFriendStatus(0);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝
         userContacts.setFriendAddDirection("out");//添加方式 in：别人加我  out：我加别人
-        userContacts.setFriendMessage(addUser.getFriend_message());//添加留言
+        userContacts.setFriendMessage(message);//添加留言
         userContacts.setState(1);
         userContacts.setCreateTime(new Date());
         userContacts.setCreateUser(user_id);
@@ -161,10 +166,49 @@ public class UserController extends BaseNController {
         boolean flag = userService.addUser(userContacts);
         if (flag) {
             result.setCode(ResultEnum.SUCCESS.getCode());
-            result.setMsg("添加成功");
+            result.setMsg("好友申请发送成功");
+            //即时通讯推送给被申请人
+            //将消息通过即时通讯返回，系统即认为发送成功
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("message", message);
+            jsonObject.put("sendUser", user_id);
+            jsonObject.put("receiver", friend_id);
+            jsonObject.put("sendDate", new Date());
+            jsonObject.put("contentType", 6);//消息类型，每次消息只能传 1 种类型（发送对应消息类型内容不能为空）1文本 2房屋卡片 3图片 4 位置 5文件 6好友申请
+            jsonObject.put("pictureUrl", "");//图片
+            jsonObject.put("fileName", "");//图片
+            jsonObject.put("fileDownloadUrl", "");//图片
+            if (webSocketServer.isOnline(friend_id)) {
+                webSocketServer.sendToUser(friend_id, jsonObject.toString());
+            } else {
+                System.out.println(friend_id + "不在线");
+            }
+
+            Date date = new Date();
+            //将消息记录存入数据库
+            Message imMessage = new Message();
+            imMessage.setUserId(user_id);
+            imMessage.setMessage(message);
+            imMessage.setSendDate(date);
+            imMessage.setChannel("");
+            imMessage.setSendUser(user_id);
+            imMessage.setReceiver(friend_id);
+            imMessage.setContentType(6);
+            imMessage.setPictureUrl("");
+            imMessage.setLongitude("");
+            imMessage.setLatitude("");
+            imMessage.setCoordinateType("");
+            imMessage.setIsRead(0);
+            imMessage.setMsgType(0);
+            imMessage.setCreateTime(date);
+            imMessage.setState(1);
+            imMessage.setFileName("");
+            imMessage.setFileDownloadUrl("");
+            boolean flagSaveRecord = chatService.addMessage(imMessage);
+
         } else {
             result.setCode(ResultEnum.EREOR.getCode());
-            result.setMsg("添加失败");
+            result.setMsg("好友申请发送失败");
         }
 
         return result;
@@ -214,6 +258,11 @@ public class UserController extends BaseNController {
                 return result;
             }
         }
+
+        //推送消息并入库
+
+        result.setCode(ResultEnum.SUCCESS.getCode());
+        result.setMsg("操作成功");
         return result;
     }
 
