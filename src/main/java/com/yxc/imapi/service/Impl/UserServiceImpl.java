@@ -8,6 +8,7 @@ import com.yxc.imapi.model.Users;
 import com.yxc.imapi.model.login.Login;
 import com.yxc.imapi.service.LoginService;
 import com.yxc.imapi.service.UserService;
+import com.yxc.imapi.utils.enums.ResultEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +16,20 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-
+    /**
+     * 获取好友请求列表
+     * @param user_id
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<Record> getNewFriendList(String user_id, String keyword) {
+        String sql="select * from user_contacts \n" +
+                "where friend_id='"+user_id+"'\n" +
+                "and friend_add_direction='out'\n" +
+                "and state=1";
+        return Db.find(sql);
+    }
 
     @Override
     public List<Users> getUser(String user_id) {
@@ -30,6 +44,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean addUser(UserContacts userContacts) {
+        List<UserContacts> list=UserContacts.dao.find("select * from user_contacts where user_id='" + userContacts.getUserId() + "' and friend_id='" + userContacts.getFriendId() + "' and state<>0");
+        if (null != list && list.size() > 0) {
+            int id=list.get(0).getId();
+            userContacts.setId(id);
+            return userContacts.update();
+        }
         return userContacts.save();
+    }
+
+    @Override
+    public boolean updateFriendStatus(int id,int friend_status) {
+        int flag= Db.update("update user_contacts set friend_status=? where id=? and state=1",friend_status,id);
+        if (flag>0) {
+           return true;
+        } else {
+            return false;
+        }
     }
 }

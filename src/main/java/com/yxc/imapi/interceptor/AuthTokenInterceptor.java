@@ -60,7 +60,7 @@ public class AuthTokenInterceptor implements HandlerInterceptor{
         //判断过期时间，如果小于60分钟，延迟过期时间
         long expire = redisDao.getExpire(token);
         if(expire/60 < 60){
-            redisDao.vSet(token, "延迟过期",60*60L);
+            redisDao.vSet(token, "延迟过期",3*60*60L);
         }
         //用户登录信息存入线程变量
 //        LocalCurrentUser currentUser = JwtUtil.getCurrUserFromToken(token);

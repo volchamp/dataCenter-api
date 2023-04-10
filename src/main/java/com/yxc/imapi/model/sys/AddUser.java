@@ -21,4 +21,7 @@ public class AddUser {
     @NotNull
     private String friend_id;
 
+    //留言
+    private String friend_message;
+
 }

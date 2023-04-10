@@ -1,4 +1,5 @@
 package com.yxc.imapi.controller;
+
 import java.util.Date;
 
 import com.jfinal.plugin.activerecord.Db;
@@ -8,12 +9,15 @@ import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.base.RedisDao;
 import com.yxc.imapi.core.WebSocketServer;
 import com.yxc.imapi.model.*;
+import com.yxc.imapi.model.chat.Contact;
 import com.yxc.imapi.model.sys.AddUser;
+import com.yxc.imapi.model.sys.NewFriend;
 import com.yxc.imapi.model.sys.UserList;
 import com.yxc.imapi.service.UserService;
 import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.enums.ResultEnum;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,65 +55,104 @@ public class UserController extends BaseNController {
 
     @RequestMapping(value = "/getUser")
     public Map<String, Object> getUser(@RequestHeader(value = "v_token", required = true) String v_token,
-                                     HttpServletRequest request, HttpServletResponse hresponse) {
+                                       HttpServletRequest request, HttpServletResponse hresponse) {
         Map<String, Object> remap = new HashMap<>();
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
-        List<Users> usersList=userService.getUser(users.getUserId());
-        if(usersList!=null&&usersList.size()>0){
-            Users user=usersList.get(0);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
+        List<Users> usersList = userService.getUser(users.getUserId());
+        if (usersList != null && usersList.size() > 0) {
+            Users user = usersList.get(0);
             Map<String, Object> usermap = new HashMap<>();
             usermap.put("userId", user.getUserId());
             usermap.put("userName", user.getUserName());
-            usermap.put("userPhone",user.getUserPhone());
+            usermap.put("userPhone", user.getUserPhone());
             usermap.put("headUrl", user.getHeadUrl());
-            usermap.put("nickName",user.getNickName());
-            usermap.put("bgCover",user.getBgCover());
-            usermap.put("personalSign",user.getPersonalSign());
-            usermap.put("email",user.getEmail());
-            usermap.put("sex",user.getSex());
+            usermap.put("nickName", user.getNickName());
+            usermap.put("bgCover", user.getBgCover());
+            usermap.put("personalSign", user.getPersonalSign());
+            usermap.put("email", user.getEmail());
+            usermap.put("sex", user.getSex());
 
             remap.put("userinfo", usermap);
             remap.put("result", "SUCCESS");
             remap.put("msg", "成功");
             return remap;
-        }else{
+        } else {
             remap.put("result", "ERROR");
             remap.put("msg", "未获取到用户信息");
             return remap;
         }
     }
 
+
+    /**
+     * 获取好友请求列表
+     *
+     * @param v_token 系统token
+     * @return
+     * @author yxc
+     * @date 2023/04/10 18:22
+     */
+    @PostMapping("/getNewFriendList")
+    @ApiOperation(value = "获取好友请求列表", notes = "", response = Result.class)
+    public Result getNewFriendList(@RequestHeader(value = "v_token", required = true) String v_token,
+                                   @RequestBody @Validated @ApiParam(value = "{json对象}") Contact contact,
+                                   HttpServletRequest request, HttpServletResponse hresponse) {
+        Result result = new Result();
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
+
+        List<Record> list = userService.getNewFriendList(users.getUserId(), contact.getKeyword());
+        result.setCode(ResultEnum.SUCCESS.getCode());
+        result.setMsg("获取数据成功");
+        result.setData(recordsToObject(list));
+        return result;
+    }
+
     @RequestMapping(value = "/addUser")
+    @ApiOperation(value = "添加好友", notes = "", response = Result.class)
     public Result addUser(@RequestHeader(value = "v_token", required = true) String v_token,
-                                       @RequestBody @Validated @ApiParam(value = "{json对象}") AddUser addUser,
-                                       HttpServletRequest request, HttpServletResponse hresponse) {
+                          @RequestBody @Validated @ApiParam(value = "{json对象}") AddUser addUser,
+                          HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         //获取登录人信息
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
         String user_id = users.getUserId();
 
         String friend_id = addUser.getFriend_id();
 
-        if(user_id.equals(friend_id)){
+        if (user_id.equals(friend_id)) {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("您不能添加自己为好友哟，亲！");
             return result;
         }
 
-        String sql="select * from user_contacts where user_id='"+user_id+"' and friend_id='"+friend_id+"' and state<>0";
-        List<Users> list=Users.dao.find(sql);
-        if(null!=list&&list.size()>0){
-            result.setCode(ResultEnum.EREOR.getCode());
-            result.setMsg("您已添加他为好友了，请勿重复操作！");
-            return result;
+        String sql = "select * from user_contacts where user_id='" + user_id + "' and friend_id='" + friend_id + "' and state<>0";
+        List<UserContacts> list = UserContacts.dao.find(sql);
+        if (null != list && list.size() > 0) {
+            UserContacts userContacts=list.get(0);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝
+            int status=userContacts.getFriendStatus();
+            switch (status){
+                case 1:
+                    result.setCode(ResultEnum.EREOR.getCode());
+                    result.setMsg("你们已经是好友了！");
+                    return result;
+                case 0:
+                    result.setCode(ResultEnum.EREOR.getCode());
+                    result.setMsg("你已经发送过请求了，请等待对方同意哟！");
+                    return result;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+
         }
 
-        UserContacts userContacts=new UserContacts();
+        UserContacts userContacts = new UserContacts();
         userContacts.setUserId(user_id);
         userContacts.setFriendId(friend_id);
         userContacts.setFriendStatus(0);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝
         userContacts.setFriendAddDirection("out");//添加方式 in：别人加我  out：我加别人
-        userContacts.setFriendMessage("");//添加留言
+        userContacts.setFriendMessage(addUser.getFriend_message());//添加留言
         userContacts.setState(1);
         userContacts.setCreateTime(new Date());
         userContacts.setCreateUser(user_id);
@@ -127,8 +170,56 @@ public class UserController extends BaseNController {
         return result;
     }
 
+    @RequestMapping(value = "/newFrendManage")
+    public Result newFrendManage(@RequestHeader(value = "v_token", required = true) String v_token,
+                                 @RequestBody @Validated @ApiParam(value = "{json对象}") NewFriend newFriend,
+                                 HttpServletRequest request, HttpServletResponse hresponse) {
+        Result result = new Result();
+        //获取登录人信息
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+
+        int id = newFriend.getId();
+        String friend_id = newFriend.getFriend_id();//申请人ID
+        int friend_status = newFriend.getFriend_status();
+        String friend_message = newFriend.getFriend_message();
+
+        //更改请求人好友状态
+        boolean flagStatus = userService.updateFriendStatus(id, friend_status);
+        if (!flagStatus) {
+            result.setCode(ResultEnum.EREOR.getCode());
+            result.setMsg("发送失败，请重试！");
+            return result;
+        }
+        if (friend_status == 1) {
+            //如果是同意，给被申请人增加一条通讯录信息
+            UserContacts userContacts = new UserContacts();
+            userContacts.setUserId(user_id);
+            userContacts.setFriendId(friend_id);
+            userContacts.setFriendStatus(1);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝
+            userContacts.setFriendAddDirection("in");//添加方式 in：别人加我  out：我加别人
+            userContacts.setFriendMessage(friend_message);//添加留言
+            userContacts.setState(1);
+            userContacts.setCreateTime(new Date());
+            userContacts.setCreateUser(user_id);
+            boolean flag = userService.addUser(userContacts);
+
+            if (flag) {
+                result.setCode(ResultEnum.SUCCESS.getCode());
+                result.setMsg("操作成功");
+                return result;
+            } else {
+                result.setCode(ResultEnum.EREOR.getCode());
+                result.setMsg("操作失败");
+                return result;
+            }
+        }
+        return result;
+    }
+
     /**
      * 删除好友
+     *
      * @param v_token
      * @param addUser
      * @param request
@@ -137,18 +228,18 @@ public class UserController extends BaseNController {
      */
     @RequestMapping(value = "/deleteFriend")
     public Result deleteFriend(@RequestHeader(value = "v_token", required = true) String v_token,
-                          @RequestBody @Validated @ApiParam(value = "{json对象}") AddUser addUser,
-                          HttpServletRequest request, HttpServletResponse hresponse) {
+                               @RequestBody @Validated @ApiParam(value = "{json对象}") AddUser addUser,
+                               HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         //获取登录人信息
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
         String user_id = users.getUserId();
 
         String friend_id = addUser.getFriend_id();
 
-        int flag=Db.update("update user_contacts set state=0 where (user_id=? and friend_id=?) or (user_id=? and friend_id=?)",user_id,friend_id,friend_id,user_id);
+        int flag = Db.update("update user_contacts set state=0 where (user_id=? and friend_id=?) or (user_id=? and friend_id=?)", user_id, friend_id, friend_id, user_id);
 
-        if (flag>0) {
+        if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("删除成功");
         } else {
@@ -161,6 +252,7 @@ public class UserController extends BaseNController {
 
     /**
      * 更换头像
+     *
      * @param avatar
      * @param request
      * @param hresponse
@@ -172,14 +264,14 @@ public class UserController extends BaseNController {
                                HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         //获取登录人信息
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
         String user_id = users.getUserId();
 
-        String avartarUrl= avatar.getAvartarUrl();
+        String avartarUrl = avatar.getAvartarUrl();
 
-        int flag=Db.update("update users set head_url=? where user_id=? and state=1",avartarUrl,user_id);
+        int flag = Db.update("update users set head_url=? where user_id=? and state=1", avartarUrl, user_id);
 
-        if (flag>0) {
+        if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("操作成功");
         } else {
@@ -192,6 +284,7 @@ public class UserController extends BaseNController {
 
     /**
      * 更换背景封面
+     *
      * @param bgCover
      * @param request
      * @param hresponse
@@ -199,16 +292,16 @@ public class UserController extends BaseNController {
      */
     @RequestMapping(value = "/updateBgCover")
     public Result updateBgCover(@RequestHeader(value = "v_token", required = true) String v_token,
-                               @RequestBody @Validated @ApiParam(value = "{json对象}") BgCover bgCover,
-                               HttpServletRequest request, HttpServletResponse hresponse) {
+                                @RequestBody @Validated @ApiParam(value = "{json对象}") BgCover bgCover,
+                                HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         //获取登录人信息
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
         String user_id = users.getUserId();
 
-        int flag=Db.update("update users set bgCover=? where user_id=? and state=1",bgCover.getBgCover(),user_id);
+        int flag = Db.update("update users set bgCover=? where user_id=? and state=1", bgCover.getBgCover(), user_id);
 
-        if (flag>0) {
+        if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("操作成功");
         } else {
@@ -221,6 +314,7 @@ public class UserController extends BaseNController {
 
     /**
      * 更换个性签名
+     *
      * @param personalSign
      * @param request
      * @param hresponse
@@ -228,16 +322,16 @@ public class UserController extends BaseNController {
      */
     @RequestMapping(value = "/updatePersonalSign")
     public Result updatePersonalSign(@RequestHeader(value = "v_token", required = true) String v_token,
-                                @RequestBody @Validated @ApiParam(value = "{json对象}") PersonalSign personalSign,
-                                HttpServletRequest request, HttpServletResponse hresponse) {
+                                     @RequestBody @Validated @ApiParam(value = "{json对象}") PersonalSign personalSign,
+                                     HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         //获取登录人信息
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
         String user_id = users.getUserId();
 
-        int flag=Db.update("update users set personalSign=? where user_id=? and state=1",personalSign.getPersonalSign(),user_id);
+        int flag = Db.update("update users set personalSign=? where user_id=? and state=1", personalSign.getPersonalSign(), user_id);
 
-        if (flag>0) {
+        if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("操作成功");
         } else {
@@ -250,6 +344,7 @@ public class UserController extends BaseNController {
 
     /**
      * 删除用户
+     *
      * @param v_token
      * @param request
      * @param hresponse
@@ -257,14 +352,14 @@ public class UserController extends BaseNController {
      */
     @RequestMapping(value = "/deleteUser")
     public Result deleteUser(@RequestHeader(value = "v_token", required = true) String v_token,
-                               HttpServletRequest request, HttpServletResponse hresponse) {
+                             HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
         String user_id = users.getUserId();
 
-        int flag=Db.update("update users set state=0 where user_id=?",user_id);
+        int flag = Db.update("update users set state=0 where user_id=?", user_id);
 
-        if (flag>0) {
+        if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("删除成功");
         } else {
@@ -277,6 +372,7 @@ public class UserController extends BaseNController {
 
     /**
      * 获取系统所有用户列表
+     *
      * @param v_token
      * @param userList
      * @param request
@@ -285,12 +381,12 @@ public class UserController extends BaseNController {
      */
     @RequestMapping(value = "/getUserList")
     public Result getUserList(@RequestHeader(value = "v_token", required = true) String v_token,
-                                       @RequestBody @Validated @ApiParam(value = "{json对象}") UserList userList,
-                                       HttpServletRequest request, HttpServletResponse hresponse) {
+                              @RequestBody @Validated @ApiParam(value = "{json对象}") UserList userList,
+                              HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        int page_size=userList.getPage_size();
-        int current_page=userList.getCurrent_page();
-        String keyword=userList.getKeyword();
+        int page_size = userList.getPage_size();
+        int current_page = userList.getCurrent_page();
+        String keyword = userList.getKeyword();
         Page<Record> page = userService.getUserList(page_size, current_page, keyword);
         BaseController baseController = new BaseController();
 
@@ -307,6 +403,7 @@ public class UserController extends BaseNController {
 
     /**
      * 获取用户角色
+     *
      * @param v_token
      * @param request
      * @param hresponse
@@ -314,11 +411,11 @@ public class UserController extends BaseNController {
      */
     @RequestMapping(value = "/getRoleByUserId")
     public Result getRoleByUserId(@RequestHeader(value = "v_token", required = true) String v_token,
-                              HttpServletRequest request, HttpServletResponse hresponse) {
+                                  HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
-        Users users=JwtUtil.getCurrUserFromToken(v_token);
-        String user_id=users.getUserId();
-        List<Record> list=Db.find("select * from sys_user_role where user_id=? and state<>0",user_id);
+        Users users = JwtUtil.getCurrUserFromToken(v_token);
+        String user_id = users.getUserId();
+        List<Record> list = Db.find("select * from sys_user_role where user_id=? and status<>0", user_id);
 
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMsg("获取数据成功");

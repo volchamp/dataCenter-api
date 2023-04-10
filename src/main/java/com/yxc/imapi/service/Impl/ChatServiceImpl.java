@@ -33,6 +33,7 @@ public class ChatServiceImpl implements ChatService {
         return Db.find(sql);
     }
 
+
     /**
      * 获取会话列表
      * @param user_id

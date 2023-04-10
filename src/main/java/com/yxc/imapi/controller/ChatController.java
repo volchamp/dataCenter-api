@@ -120,6 +120,7 @@ public class ChatController extends BaseNController {
         return result;
     }
 
+
     /**
      * 更新未读消息数
      *
