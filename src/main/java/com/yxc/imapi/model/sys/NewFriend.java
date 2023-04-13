@@ -27,4 +27,6 @@ public class NewFriend {
 
     private String friend_message;//留言
 
+    private String apply_message;//被申请人处理时，申请人的留言
+
 }

@@ -33,6 +33,22 @@ public class UserServiceImpl implements UserService {
         return Db.find(sql);
     }
 
+    /**
+     * 获取好友请求数量
+     * @param user_id
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<Record> getFriendApplyNum(String user_id, String keyword) {
+        String sql="select * from user_contacts \n" +
+                "where friend_id='"+user_id+"'\n" +
+                "and friend_add_direction='out'\n" +
+                "and state=1\n" +
+                "and friend_status=0";
+        return Db.find(sql);
+    }
+
     @Override
     public List<Users> getUser(String user_id) {
         String sql = "select * from users where user_id='" + user_id + "' and state<>0";

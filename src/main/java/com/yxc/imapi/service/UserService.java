@@ -13,5 +13,6 @@ public interface UserService {
     Page<Record> getUserList(int page_size, int current_page, String keyword);
     boolean addUser(UserContacts userContacts);
     List<Record> getNewFriendList(String user_id,String keyword);
+    List<Record> getFriendApplyNum(String user_id,String keyword);
     boolean updateFriendStatus(int id,int friend_status);
 }
