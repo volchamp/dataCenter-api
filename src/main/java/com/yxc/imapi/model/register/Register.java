@@ -24,5 +24,6 @@ public class Register {
     private String nick_name;
     @NotNull
     private String user_password;
+    private int sex;//性别
 
 }

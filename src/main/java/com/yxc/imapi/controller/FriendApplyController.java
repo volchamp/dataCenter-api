@@ -124,6 +124,12 @@ public class FriendApplyController extends BaseNController {
         String friend_id = addUser.getFriend_id();
         String message = addUser.getFriend_message();
 
+        if (null == friend_id || friend_id.equals("")) {
+            result.setCode(ResultEnum.EREOR.getCode());
+            result.setMsg("未获取到该用户ID，添加失败！");
+            return result;
+        }
+
         if (user_id.equals(friend_id)) {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("您不能添加自己为好友哟，亲！");
@@ -252,7 +258,7 @@ public class FriendApplyController extends BaseNController {
             if (flag) {
                 //更新会话
                 //申请人(对方)：
-                Date date=new Date();
+                Date date = new Date();
                 UserChatSession imUserChatSession2 = new UserChatSession();
                 imUserChatSession2.setUserId(friend_id);
                 imUserChatSession2.setFriendId(user_id);
@@ -273,7 +279,7 @@ public class FriendApplyController extends BaseNController {
                 boolean latestFlag2 = chatService.addLetestMessage(imUserChatSession2, 1);
 
                 //被申请人：
-                String apply_message=newFriend.getApply_message();//申请人的留言
+                String apply_message = newFriend.getApply_message();//申请人的留言
                 UserChatSession imUserChatSession = new UserChatSession();
                 imUserChatSession.setUserId(user_id);
                 imUserChatSession.setFriendId(friend_id);
@@ -311,7 +317,7 @@ public class FriendApplyController extends BaseNController {
                 //给双方存入添加好友成功消息
                 Message imMessage3 = new Message();
                 imMessage3.setUserId(user_id);
-                imMessage3.setMessage("你已添加了"+nike_name+",现在可以聊天了。");
+                imMessage3.setMessage("你已添加了" + nike_name + ",现在可以聊天了。");
                 imMessage3.setSendDate(date);
                 imMessage3.setChannel("sysytem");
                 imMessage3.setSendUser(user_id);

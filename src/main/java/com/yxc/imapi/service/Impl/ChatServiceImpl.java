@@ -41,7 +41,7 @@ public class ChatServiceImpl implements ChatService {
      * @return
      */
     @Override
-    public List<Record> getCusMsgLatestOneList(String user_id, String keyword) {
+    public List<Record> getChatSessionList(String user_id, String keyword) {
         String sql="select U.user_name,U.nick_name,U.head_url,LI.* from user_chat_session LI,user_contacts UC,users U\n" +
                 "where LI.user_id='"+user_id+"'\n" +
                 "and LI.friend_id=UC.friend_id\n" +

@@ -1,4 +1,5 @@
 package com.yxc.imapi.controller;
+
 import java.util.Date;
 
 import com.yxc.imapi.base.BaseNController;
@@ -42,11 +43,12 @@ public class RegisterController extends BaseNController {
 
 
     /**
-     *  账号注册
-     * @author yxc
-     * @date 2021/04/13 23:22
+     * 账号注册
+     *
      * @param v_token 系统token
      * @return
+     * @author yxc
+     * @date 2021/04/13 23:22
      */
     @PostMapping("/accountRegister")
     @ApiOperation(value = "账号注册", notes = "", response = Result.class)
@@ -55,16 +57,17 @@ public class RegisterController extends BaseNController {
         String user_id = register.getUser_id();
         String nick_name = register.getNick_name();
         String user_password = register.getUser_password();
+        int sex = register.getSex();
 
-        String sql="select * from users where user_id='"+user_id+"'";
-        List<Users> list=Users.dao.find(sql);
-        if(null!=list&&list.size()>0){
+        String sql = "select * from users where user_id='" + user_id + "'";
+        List<Users> list = Users.dao.find(sql);
+        if (null != list && list.size() > 0) {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("该账号已存在，请重新填写");
             return result;
         }
 
-        Users users=new Users();
+        Users users = new Users();
         users.setUserId(user_id);
         users.setUserPassword(user_password);
         users.setUserName("");
@@ -72,28 +75,27 @@ public class RegisterController extends BaseNController {
         users.setEmail("");
         users.setNickName(nick_name);
         users.setHeadUrl("/default_avatar.jpeg");
-        users.setSex(1);
+        users.setSex(sex);
         users.setState(1);
         users.setCreateTime(new Date());
         users.setCreateUser("");
         users.setLastUpdateTime(new Date());
 
-        SysUserRole sysUserRole=new SysUserRole();
+        SysUserRole sysUserRole = new SysUserRole();
         sysUserRole.setUserId(user_id);
         sysUserRole.setRoleCode("006");
         sysUserRole.setStatus(1);
         sysUserRole.setCreateDate(new Date());
 
 
-
         //注册
-        boolean flag=registerService.register(users);
+        boolean flag = registerService.register(users);
         //赋予角色
-        boolean flagP=registerService.addPermission(sysUserRole);
-        if(flag){
+        boolean flagP = registerService.addPermission(sysUserRole);
+        if (flag) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("注册成功");
-        }else{
+        } else {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("注册失败");
         }

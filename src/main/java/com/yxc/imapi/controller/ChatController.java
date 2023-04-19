@@ -105,15 +105,15 @@ public class ChatController extends BaseNController {
      * @author yxc
      * @date 2020/11/06 10:25
      */
-    @PostMapping("/getCusMsgLatestOneList")
+    @PostMapping("/getChatSessionList")
     @ApiOperation(value = "获取会话列表", notes = "", response = Result.class)
-    public Result getCusMsgLatestOneList(@RequestHeader(value = "v_token", required = true) String v_token,
+    public Result getChatSessionList(@RequestHeader(value = "v_token", required = true) String v_token,
                                          @RequestBody @Validated @ApiParam(value = "{json对象}") Contact contact,
                                          HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         Users users=JwtUtil.getCurrUserFromToken(v_token);
 
-        List<Record> list = chatService.getCusMsgLatestOneList(users.getUserId(), contact.getKeyword());
+        List<Record> list = chatService.getChatSessionList(users.getUserId(), contact.getKeyword());
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMsg("获取数据成功");
         result.setData(recordsToObject(list));
@@ -174,9 +174,9 @@ public class ChatController extends BaseNController {
     }
 
 
-    @PostMapping("/merchantmsg")
+    @PostMapping("/sendMsg")
     @ApiOperation(value = "发送消息", notes = "", response = Result.class)
-    public Result merchantmsg(@RequestHeader(value = "v_token", required = true) String v_token,
+    public Result sendMsg(@RequestHeader(value = "v_token", required = true) String v_token,
                               @RequestBody @Validated @ApiParam(value = "{json对象}") merchantmsg merchantmsg, HttpServletRequest request, HttpServletResponse hresponse) {
         Result result = new Result();
         Users users=JwtUtil.getCurrUserFromToken(v_token);
