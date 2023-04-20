@@ -57,7 +57,7 @@ public class FriendApplyController extends BaseNController {
 
 
     /**
-     * 获取好友请求列表
+     * 获取好友请求列表（申请的和被申请的）
      *
      * @param v_token 系统token
      * @return
@@ -247,7 +247,7 @@ public class FriendApplyController extends BaseNController {
             UserContacts userContacts = new UserContacts();
             userContacts.setUserId(user_id);
             userContacts.setFriendId(friend_id);
-            userContacts.setFriendStatus(1);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝
+            userContacts.setFriendStatus(1);//关系状态，0请求加对方为好友，1正常（同意），2黑名单，3拒绝，4忽略
             userContacts.setFriendAddDirection("in");//添加方式 in：别人加我  out：我加别人
             userContacts.setFriendMessage(friend_message);//添加留言
             userContacts.setState(1);

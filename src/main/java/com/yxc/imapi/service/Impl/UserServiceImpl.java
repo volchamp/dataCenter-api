@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Record> getNewFriendList(String user_id, String keyword) {
         String sql="select A.*,B.user_name,B.user_phone,B.nick_name,B.sex,B.age,B.head_url,B.personalSign from user_contacts A,Users B\n" +
-                "where A.friend_id='"+user_id+"'\n" +
+                "where (A.friend_id='"+user_id+"' or A.user_id='"+user_id+"')\n" +
                 "and A.friend_add_direction='out'\n" +
                 "and A.user_id=B.user_id\n" +
                 "and A.state=1\n" +
