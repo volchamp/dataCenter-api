@@ -1,4 +1,5 @@
 package com.yxc.imapi.service.Impl;
+
 import java.util.Date;
 
 import com.jfinal.plugin.activerecord.Db;
@@ -16,16 +17,17 @@ public class ChatServiceImpl implements ChatService {
 
     /**
      * 获取用户通讯录
+     *
      * @param user_id
      * @param keyword
      * @return
      */
     @Override
     public List<Record> getContactList(String user_id, String keyword) {
-        String sql="select U.* from user_contacts UC,users U\n" +
-                "where UC.user_id='"+user_id+"'\n" +
+        String sql = "select U.* from user_contacts UC,users U\n" +
+                "where UC.user_id='" + user_id + "'\n" +
                 "and UC.friend_id=U.user_id\n" +
-                "and U.nick_name like '%"+keyword+"%'\n" +
+                "and U.nick_name like '%" + keyword + "%'\n" +
                 "and UC.state<>0\n" +
                 "and UC.friend_status=1\n" +
                 "and U.state<>0\n" +
@@ -36,22 +38,33 @@ public class ChatServiceImpl implements ChatService {
 
     /**
      * 获取会话列表
+     *
      * @param user_id
      * @param keyword
      * @return
      */
     @Override
     public List<Record> getChatSessionList(String user_id, String keyword) {
-        String sql="select U.user_name,U.nick_name,U.head_url,LI.* from user_chat_session LI,user_contacts UC,users U\n" +
-                "where LI.user_id='"+user_id+"'\n" +
-                "and LI.friend_id=UC.friend_id\n" +
-                "and LI.user_id=UC.user_id\n" +
-                "and LI.friend_id=U.user_id\n" +
-                "and U.nick_name like '%"+keyword+"%'\n" +
-                "and LI.state<>0\n" +
-                "and UC.state<>0\n" +
-                "and U.state<>0\n" +
-                "";//order by LI.lastUpdateTime desc
+        String sql = "select U.user_name,U.nick_name,U.head_url,UCS.* from user_chat_session UCS\n" +
+                "left join users U\n" +
+                "on UCS.friend_id=U.user_id and UCS.state<>0 and U.state<>0\n" +
+                "where UCS.user_id='" + user_id + "'\n" +
+                "and U.nick_name like '%" + keyword + "%'";//order by UCS.lastUpdateTime desc
+        return Db.find(sql);
+    }
+
+    /**
+     * 获取会话列表总未读数
+     *
+     * @param user_id
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<Record> getChatSessionUnreadSum(String user_id, String keyword) {
+        String sql = "select sum(unreadCount) unreadSum from user_chat_session A\n" +
+                "where A.user_id='" + user_id + "'\n" +
+                "and A.state<>0";
         return Db.find(sql);
     }
 
@@ -63,10 +76,10 @@ public class ChatServiceImpl implements ChatService {
      * @return
      */
     @Override
-    public Page<Message> getMessageHis(int pageNumber,int pageSize,String user_id,String friend_id) {
-        String sqlExceptSelect="from message\n" +
-                "where sendUser='" + user_id + "' and receiver='"+friend_id+"'\n" +
-                "or receiver='" + user_id + "' and sendUser='"+friend_id+"'\n" +
+    public Page<Message> getMessageHis(int pageNumber, int pageSize, String user_id, String friend_id) {
+        String sqlExceptSelect = "from message\n" +
+                "where sendUser='" + user_id + "' and receiver='" + friend_id + "'\n" +
+                "or receiver='" + user_id + "' and sendUser='" + friend_id + "'\n" +
                 "and state<>0\n" +
                 "order by create_time desc";
         Page<Message> list = Message.dao.paginate(pageNumber, pageSize, "select *", sqlExceptSelect);
@@ -94,8 +107,8 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public boolean addLetestMessage(UserChatSession userChatSession, int from) {
         String sendUserId = userChatSession.getUserId();
-        String receiverUserId=userChatSession.getFriendId();
-        List<UserChatSession> latestInfoList = userChatSession.find("select * from user_chat_session where user_id='"+sendUserId+"' and friend_id='"+receiverUserId+"' and state<>0");
+        String receiverUserId = userChatSession.getFriendId();
+        List<UserChatSession> latestInfoList = userChatSession.find("select * from user_chat_session where user_id='" + sendUserId + "' and friend_id='" + receiverUserId + "' and state<>0");
         if (latestInfoList != null && latestInfoList.size() > 0) {
             UserChatSession info = latestInfoList.get(0);
 
@@ -132,8 +145,8 @@ public class ChatServiceImpl implements ChatService {
      * @return
      */
     @Override
-    public boolean updateUnreadCount(String user_id, int unreadCount,String friend_id) {
-        String sql = "update user_chat_session set unreadCount="+unreadCount+" where user_id='"+user_id+"' and friend_id='"+friend_id+"' and state<>0";
+    public boolean updateUnreadCount(String user_id, int unreadCount, String friend_id) {
+        String sql = "update user_chat_session set unreadCount=" + unreadCount + " where user_id='" + user_id + "' and friend_id='" + friend_id + "' and state<>0";
         int flag = Db.update(sql);
         if (flag > 0) {
             return true;

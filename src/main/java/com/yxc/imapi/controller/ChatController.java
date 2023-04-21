@@ -120,6 +120,29 @@ public class ChatController extends BaseNController {
         return result;
     }
 
+    /**
+     * 获取会话列表总未读数
+     *
+     * @param v_token 系统token
+     * @return
+     * @author yxc
+     * @date 2020/11/06 10:25
+     */
+    @PostMapping("/getChatSessionUnreadSum")
+    @ApiOperation(value = "获取会话列表总未读数", notes = "", response = Result.class)
+    public Result getChatSessionUnreadSum(@RequestHeader(value = "v_token", required = true) String v_token,
+                                     @RequestBody @Validated @ApiParam(value = "{json对象}") Contact contact,
+                                     HttpServletRequest request, HttpServletResponse hresponse) {
+        Result result = new Result();
+        Users users=JwtUtil.getCurrUserFromToken(v_token);
+
+        List<Record> list = chatService.getChatSessionUnreadSum(users.getUserId(), contact.getKeyword());
+        result.setCode(ResultEnum.SUCCESS.getCode());
+        result.setMsg("获取数据成功");
+        result.setData(recordsToObject(list));
+        return result;
+    }
+
 
     /**
      * 更新未读消息数
