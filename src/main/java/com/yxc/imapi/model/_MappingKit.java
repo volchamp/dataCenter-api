@@ -16,6 +16,7 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
+		arp.addMapping("avatar_history", "id", AvatarHistory.class);
 		arp.addMapping("message", "id", Message.class);
 		arp.addMapping("sys_role", "id", SysRole.class);
 		arp.addMapping("sys_user_role", "id", SysUserRole.class);

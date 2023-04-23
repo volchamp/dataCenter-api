@@ -99,6 +99,15 @@ public abstract class BaseUsers<M extends BaseUsers<M>> extends Model<M> impleme
 		return getInt("sex");
 	}
 
+	public M setAge(java.lang.Integer age) {
+		set("age", age);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getAge() {
+		return getInt("age");
+	}
+
 	public M setPersonalSign(java.lang.String personalSign) {
 		set("personalSign", personalSign);
 		return (M)this;
