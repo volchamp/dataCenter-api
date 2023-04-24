@@ -75,6 +75,7 @@ public class UserController extends BaseNController {
             usermap.put("personalSign", user.getPersonalSign());
             usermap.put("email", user.getEmail());
             usermap.put("sex", user.getSex());
+            usermap.put("age", user.getAge());
 
             remap.put("userinfo", usermap);
             remap.put("result", "SUCCESS");
