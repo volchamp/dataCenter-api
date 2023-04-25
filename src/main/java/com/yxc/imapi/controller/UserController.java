@@ -9,6 +9,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.base.RedisDao;
 import com.yxc.imapi.core.WebSocketServer;
+import com.yxc.imapi.dao.PhotoWallDao;
 import com.yxc.imapi.model.*;
 import com.yxc.imapi.model.chat.Contact;
 import com.yxc.imapi.model.sys.AddUser;
@@ -18,6 +19,7 @@ import com.yxc.imapi.service.ChatService;
 import com.yxc.imapi.service.UserService;
 import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
+import com.yxc.imapi.utils.UuidUtil;
 import com.yxc.imapi.utils.enums.ResultEnum;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,6 +57,9 @@ public class UserController extends BaseNController {
     UserService userService;
     @Autowired
     RedisDao redisDao;
+
+    @Autowired
+    PhotoWallDao photoWallDao;
 
 
     @RequestMapping(value = "/getUser")
@@ -146,6 +151,10 @@ public class UserController extends BaseNController {
         if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("操作成功");
+            PhotoWall photoWall = new PhotoWall();
+            photoWall.setId(UuidUtil.getUuid());
+            photoWallDao.insert(photoWall);
+
         } else {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("操作失败");
