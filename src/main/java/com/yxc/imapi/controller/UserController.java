@@ -2,18 +2,15 @@ package com.yxc.imapi.controller;
 
 import java.util.Date;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.yxc.imapi.base.BaseNController;
 import com.yxc.imapi.base.RedisDao;
 import com.yxc.imapi.core.WebSocketServer;
-import com.yxc.imapi.dao.PhotoWallDao;
+import com.yxc.imapi.mapper.AvatarHistoryDao;
 import com.yxc.imapi.model.*;
-import com.yxc.imapi.model.chat.Contact;
 import com.yxc.imapi.model.sys.AddUser;
-import com.yxc.imapi.model.sys.NewFriend;
 import com.yxc.imapi.model.sys.UserList;
 import com.yxc.imapi.service.ChatService;
 import com.yxc.imapi.service.UserService;
@@ -21,7 +18,6 @@ import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.UuidUtil;
 import com.yxc.imapi.utils.enums.ResultEnum;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +55,7 @@ public class UserController extends BaseNController {
     RedisDao redisDao;
 
     @Autowired
-    PhotoWallDao photoWallDao;
+    AvatarHistoryDao avatarHistoryDao;
 
 
     @RequestMapping(value = "/getUser")
@@ -151,9 +147,17 @@ public class UserController extends BaseNController {
         if (flag > 0) {
             result.setCode(ResultEnum.SUCCESS.getCode());
             result.setMsg("操作成功");
-            PhotoWall photoWall = new PhotoWall();
-            photoWall.setId(UuidUtil.getUuid());
-            photoWallDao.insert(photoWall);
+
+            //这里用的mybatisplus插入数据库
+            AvatarHistory avatarHistory=new AvatarHistory();
+            String uuid=UuidUtil.getUuid();
+            avatarHistory.setId(uuid);
+            avatarHistory.setUser_id(user_id);
+            avatarHistory.setAvatar(avartarUrl);
+            avatarHistory.setState(1);
+            avatarHistory.setCreate_time(new Date());
+            avatarHistory.setCreate_user(user_id);
+            avatarHistoryDao.insert(avatarHistory);
 
         } else {
             result.setCode(ResultEnum.EREOR.getCode());

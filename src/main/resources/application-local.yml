@@ -34,3 +34,17 @@ http_pool:
   connection_request_timeout: 1000
   socket_timeout: 65000
   validate_after_inactivity: 2000
+
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.yxc.imapi.model
+  configuration:
+    call-setters-on-nulls: true
+
+mybatis-plus:
+  mapperLocations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.yxc.imapi.model
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

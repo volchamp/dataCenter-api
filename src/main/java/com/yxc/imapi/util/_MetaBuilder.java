@@ -18,7 +18,7 @@ public class _MetaBuilder extends MetaBuilder{
 
     @Override
     protected boolean isSkipTable(String tableName) {
-        String[] tableArray = {"users","message","user_contacts","user_chat_session","sys_role","sys_user_role","avatar_history"};//此处填入需要生成model的表
+        String[] tableArray = {"users","message","user_contacts","user_chat_session","sys_role","sys_user_role"};//此处填入需要生成model的表
         for(int i=0;i<tableArray.length;i++){
             if(tableName.equals(tableArray[i])){
                 return false;

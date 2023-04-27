@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yxc.imapi.mapper.PhotoWallDao">
+    <resultMap type="java.util.Map" id="PhotoWallMap"></resultMap>
+
+    <select id="getPhotoWallList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT * FROM photo_wall where user_id=#{user_id,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="addData"  parameterType="java.util.Map" >
+        ${sql}
+    </insert>
+
+    <insert id="insertPhotoWall">
+        insert into photo_wall(id,user_id,url,type,sort,state,create_time,create_user)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.user_id,jdbcType=VARCHAR},
+            #{item.url,jdbcType=VARCHAR},
+            1,
+            1,
+            now(),
+            #{item.user_id,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+
+
+    <update id="updateJob"  parameterType="java.util.Map" >
+        UPDATE DI.HDPT_JOB SET
+        STATE=#{P_STATE,jdbcType=INTEGER},
+        LASTUPDATE_TIME=SYSDATE
+        WHERE JOB_ID=#{P_JOB_ID,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertJob" parameterType="java.util.Map">
+        INSERT INTO DI.HDPT_JOB(JOB_ID,JOB_NAME,ParentFolderName,TarGzName,CREATE_TIME,STATE)
+        select AUTO_ICRMT_ID_SEQ.NEXTVAL,#{JOB_NAME,jdbcType=VARCHAR},#{ParentFolderName,jdbcType=VARCHAR},#{TarGzName,jdbcType=VARCHAR},SYSDATE,1 from dual
+    </insert>
+
+
+</mapper>

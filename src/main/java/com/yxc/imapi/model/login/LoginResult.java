@@ -1,17 +1,19 @@
 package com.yxc.imapi.model.login;
 
+import com.yxc.imapi.model.Users;
+
 public class LoginResult {
     private  String RESULT;
     private  String DSC;
-    private  UserInfo userInfo;
+    private Users userInfo;
     private  TokenInfo tokenInfo;
 
 
-    public UserInfo getUserInfo() {
+    public Users getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
+    public void setUserInfo(Users userInfo) {
         this.userInfo = userInfo;
     }
 
