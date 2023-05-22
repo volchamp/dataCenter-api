@@ -1,5 +1,6 @@
 package com.yxc.imapi.model.login;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -22,5 +23,11 @@ public class Login {
     private String user_id;
     @NotNull
     private String user_password;
+
+    @ApiModelProperty(value = "图形验证码")
+    String captcha;
+
+    @ApiModelProperty(value = "sessionId")
+    String sessionID;
 
 }

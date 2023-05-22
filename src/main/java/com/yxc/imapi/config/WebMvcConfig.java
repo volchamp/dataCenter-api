@@ -22,6 +22,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> patterns = new ArrayList<>();
         patterns.add("/**/login/login");
+        patterns.add("/**/login/getValidateCode");
         patterns.add("/**/register/accountRegister");
         patterns.add("/**/attach/uploadAtt");
         registry.addInterceptor(authTokenInterceptor)

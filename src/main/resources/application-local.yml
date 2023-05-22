@@ -13,6 +13,9 @@ config:
     # header 名称
     header: token
 
+myserver:
+  name: auth-server
+
 spring:
   redis:
     host: 124.222.4.40
@@ -22,9 +25,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://124.222.4.40:3306/im?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/im?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowMultiQueries=true
     username: root
-    password: yxc123456
+    password: 666888
 
 
 http_pool:

@@ -13,6 +13,9 @@ config:
     # header 名称
     header: token
 
+myserver:
+  name: auth-server
+
 spring:
   redis:
     host: 124.222.4.40
