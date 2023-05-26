@@ -3,6 +3,7 @@ package com.yxc.imapi.controller;
 import com.yxc.imapi.mapper.PhotoWallDao;
 import com.yxc.imapi.model.PhotoWall;
 import com.yxc.imapi.model.Users;
+import com.yxc.imapi.service.PhotoWallService;
 import com.yxc.imapi.util.JwtUtil;
 import com.yxc.imapi.utils.Result;
 import com.yxc.imapi.utils.UuidUtil;
@@ -22,6 +23,9 @@ import java.util.*;
 public class PhotoWallController {
     @Autowired
     PhotoWallDao photoWallDao;
+
+    @Autowired
+    PhotoWallService photoWallService;
 
     /**
      * 添加照片墙，用mybatis-plus框架
@@ -98,7 +102,7 @@ public class PhotoWallController {
         }
 
 
-        int flag = photoWallDao.insertPhotoWall(list);
+        int flag = photoWallService.insertPhotoWall(list);
         if (flag <= 0) {
             result.setCode(ResultEnum.EREOR.getCode());
             result.setMsg("操作失败");
@@ -122,7 +126,7 @@ public class PhotoWallController {
 
         Map<String, Object> map = new HashMap<>();
         map.put("user_id", user_id);
-        List<Map<String, Object>> photoWallList = photoWallDao.getPhotoWallList(map);
+        List<Map<String, Object>> photoWallList = photoWallService.getPhotoWallList(map);
 
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMsg("获取成功");
